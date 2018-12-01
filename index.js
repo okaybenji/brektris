@@ -55,6 +55,7 @@ const scenes = {
       this.physics.world.setBoundsCollision(true);
 
       this.bricks = this.physics.add.staticGroup();
+      this.balls = [];
 
       this.add.image(game.canvas.width / 2, 2100, 'line');
 
@@ -72,53 +73,93 @@ const scenes = {
         });
       };
 
+      /**
+       * Adds a ball to the world.
+       * @param {Ball} fromBall Optional. New ball will be cloned from this one.
+       */
+      const addBall = (fromBall) => {
+        let x, y, velocity;
+
+        if (fromBall) {
+          x = fromBall.x;
+          y = fromBall.y;
+          velocity = fromBall.body.velocity;
+        } else {
+          x = game.canvas.width / 2;
+          y = 2050;
+          velocity = {x: 0, y: 0};
+        }
+
+        const ball = this.physics.add.image(x, y, 'ball')
+          .setCollideWorldBounds(true)
+          .setBounce(1)
+          .setVelocity(velocity.x, velocity.y);
+
+        if (!fromBall) {
+          ball.setData('onPaddle', true);
+        }
+
+        this.physics.add.collider(ball, this.bricks, (ball, brick) => brick.disableBody(true, true), null, this);
+        this.physics.add.collider(ball, this.paddle, (ball, paddle) => {
+          if (ball.x < paddle.x) {
+            //  Ball is on the left-hand side of the paddle
+            const diff = paddle.x - ball.x;
+            ball.setVelocityX(-10 * diff);
+          }
+          else if (ball.x > paddle.x) {
+            //  Ball is on the right-hand side of the paddle
+            const diff = ball.x -paddle.x;
+            ball.setVelocityX(10 * diff);
+          }
+          else {
+            //  Ball is perfectly in the middle
+            //  Add a little random X to stop it bouncing straight up!
+            ball.setVelocityX(2 + Math.random() * 8);
+          }
+        }, null, this);
+
+        this.balls.push(ball);
+      };
+
       addBrickRow();
       setInterval(addBrickRow, 5000);
 
-      this.ball = this.physics.add.image(game.canvas.width / 2, 2050, 'ball').setCollideWorldBounds(true).setBounce(1);
-      this.ball.setData('onPaddle', true);
+      addBall();
+      setInterval(() => {
+        addBall(this.balls[0]);
+      }, 5000);
 
       this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
-
-      //  Our colliders
-      this.physics.add.collider(this.ball, this.bricks, (ball, brick) => brick.disableBody(true, true), null, this);
-      this.physics.add.collider(this.ball, this.paddle, (ball, paddle) => {
-        if (ball.x < paddle.x) {
-          //  Ball is on the left-hand side of the paddle
-          const diff = paddle.x - ball.x;
-          ball.setVelocityX(-10 * diff);
-        }
-        else if (ball.x > paddle.x) {
-          //  Ball is on the right-hand side of the paddle
-          const diff = ball.x -paddle.x;
-          ball.setVelocityX(10 * diff);
-        }
-        else {
-          //  Ball is perfectly in the middle
-          //  Add a little random X to stop it bouncing straight up!
-          ball.setVelocityX(2 + Math.random() * 8);
-        }
-      }, null, this);
 
       this.input.on('pointermove', (pointer) => {
         //  Keep the paddle within the game
         const margin = this.paddle.width / 3;
         this.paddle.x = Phaser.Math.Clamp(pointer.x, margin, game.canvas.width - margin);
 
-        if (this.ball.getData('onPaddle')) {
-          this.ball.x = this.paddle.x;
+        const ballOnPaddle = this.balls.find(b => b.getData('onPaddle'));
+        if (ballOnPaddle) {
+          ballOnPaddle.x = this.paddle.x;
         }
       }, this);
 
       this.input.on('pointerup', (pointer) => {
-        if (this.ball.getData('onPaddle')) {
-          this.ball.setVelocity(-75, -2000);
-          this.ball.setData('onPaddle', false);
+        const ballOnPaddle = this.balls.find(b => b.getData('onPaddle'));
+        if (ballOnPaddle) {
+          ballOnPaddle.setVelocity(-75, -2000);
+          ballOnPaddle.setData('onPaddle', false);
         }
+
       }, this);
     },
     update() {
+      this.balls = this.balls.filter((ball) => {
+        if (ball.y > this.paddle.y && this.balls.length > 1) {
+          ball.disableBody(true, true);
+          return false;
+        }
 
+        return true;
+      });
     },
   },
   pause: {

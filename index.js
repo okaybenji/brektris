@@ -49,8 +49,9 @@ const scenes = {
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');
-      this.load.image('brick-shell', 'img/brick-shell.png');
-      this.load.image('brick-2xball', 'img/brick-2xball.png');
+      this.load.image('brickShell', 'img/brickShell.png');
+      this.load.image('brickHard', 'img/brickHard.png');
+      this.load.image('brick2xBall', 'img/brick2xBall.png');
       this.load.image('line', 'img/dotted-line.png');
     },
     create() {
@@ -66,8 +67,9 @@ const scenes = {
           const rand = Math.random();
 
           const type =
-            rand < 0.1 ? 'brick-2xball'
-            : rand < 0.25 ? 'brick-shell'
+            rand < 0.15 ? 'brick2xBall'
+            : rand < 0.25 ? 'brickShell'
+            : rand < 0.35 ? 'brickHard'
             : 'brick';
 
           const brick = new Phaser.Physics.Arcade.Sprite(this, x, -40, type);
@@ -108,7 +110,7 @@ const scenes = {
 
         this.physics.add.collider(ball, this.bricks, (ball, brick) => {
           const typeStrategy = {
-            'brick-2xball': () => {
+            brick2xBall() {
               addBall({
                 x: ball.x,
                 y: ball.y,
@@ -123,7 +125,7 @@ const scenes = {
             brick() {
               brick.disableBody(true, true);
             },
-            'brick-shell': () => {
+            brickShell: () => {
               // Must hit it from above.
               if (ball.body.blocked.down) {
                 brick.disableBody(true, true);
@@ -137,6 +139,16 @@ const scenes = {
                   repeat: 2
                 });
               }
+            },
+            brickHard: () => {
+              // Turns into regular brick.
+              const x = brick.x;
+              const y = brick.y;
+              brick.disableBody(true, true);
+              const newBrick = new Phaser.Physics.Arcade.Sprite(this, x, y, 'brick');
+              newBrick
+                .type = 'brick';
+              this.bricks.add(newBrick, true);
             },
           };
 

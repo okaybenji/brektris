@@ -49,6 +49,7 @@ const scenes = {
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');
+      this.load.image('brick-shell', 'img/brick-shell.png');
       this.load.image('brick-2xball', 'img/brick-2xball.png');
       this.load.image('line', 'img/dotted-line.png');
     },
@@ -62,7 +63,13 @@ const scenes = {
 
       const addBrickRow = () => {
         const createBrick = (x) => {
-          const type = Math.random() < 0.1 ? 'brick-2xball' : 'brick';
+          const rand = Math.random();
+
+          const type =
+            rand < 0.1 ? 'brick-2xball'
+            : rand < 0.25 ? 'brick-shell'
+            : 'brick';
+
           const brick = new Phaser.Physics.Arcade.Sprite(this, x, -40, type);
           brick.type = type;
 
@@ -100,17 +107,40 @@ const scenes = {
         }
 
         this.physics.add.collider(ball, this.bricks, (ball, brick) => {
-          if (brick.type === 'brick-2xball') {
-            addBall({
-              x: ball.x,
-              y: ball.y,
-              velocity: {
-                x: ball.body.velocity.x,
-                y: -ball.body.velocity.y
+          const typeStrategy = {
+            'brick-2xball': () => {
+              addBall({
+                x: ball.x,
+                y: ball.y,
+                velocity: {
+                  x: ball.body.velocity.x,
+                  y: -ball.body.velocity.y
+                }
+              });
+
+              brick.disableBody(true, true);
+            },
+            brick() {
+              brick.disableBody(true, true);
+            },
+            'brick-shell': () => {
+              // Must hit it from above.
+              if (ball.body.blocked.down) {
+                brick.disableBody(true, true);
+              } else {
+                this.tweens.add({
+                  targets: brick,
+                  props: {
+                    x: { value: brick.x + 10, duration: 50 },
+                  },
+                  yoyo: true,
+                  repeat: 2
+                });
               }
-            });
-          }
-          brick.disableBody(true, true)
+            },
+          };
+
+          typeStrategy[brick.type]();
         }, null, this);
         this.physics.add.collider(ball, this.paddle, (ball, paddle) => {
           if (ball.x < paddle.x) {

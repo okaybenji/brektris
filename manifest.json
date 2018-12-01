@@ -1,6 +1,13 @@
 {
   "name": "brektris",
   "short_name": "brektris",
+  "icons": [{
+      "src": "img/icon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }],
   "start_url": "index.html",
   "display": "fullscreen",
+  "background_color": "hsl(0, 0%, 50%)",
+  "theme_color": "hsl(345, 100%, 55%)"
 }

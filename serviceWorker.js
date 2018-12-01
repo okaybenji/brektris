@@ -5,6 +5,8 @@ var cacheName = 'fmk';
 var filesToCache = [
   '/',
   '.',
+  './img',
+  './img/icon.png',
   './index.html',
   './index.js',
   './manifest.json',

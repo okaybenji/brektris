@@ -72,10 +72,10 @@ const scenes = {
       addBrickRow();
       setInterval(addBrickRow, 5000);
 
-      this.ball = this.physics.add.image(400, 2350, 'ball').setCollideWorldBounds(true).setBounce(1);
+      this.ball = this.physics.add.image(game.canvas.width / 2, 2050, 'ball').setCollideWorldBounds(true).setBounce(1);
       this.ball.setData('onPaddle', true);
 
-      this.paddle = this.physics.add.image(400, 2400, 'paddle').setImmovable();
+      this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
 
       //  Our colliders
       this.physics.add.collider(this.ball, this.bricks, (ball, brick) => brick.disableBody(true, true), null, this);

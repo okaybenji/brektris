@@ -52,6 +52,8 @@ const scenes = {
       this.load.image('brickShell', 'img/brickShell.png');
       this.load.image('brickHard', 'img/brickHard.png');
       this.load.image('brick2xBall', 'img/brick2xBall.png');
+      this.load.image('brickShooter', 'img/brickShooter.png');
+      this.load.image('bullet', 'img/bullet.png');
       this.load.image('line', 'img/dotted-line.png');
     },
     create() {
@@ -59,6 +61,10 @@ const scenes = {
 
       this.bricks = this.physics.add.staticGroup();
       this.balls = [];
+      this.timers = {
+        shooterExpiration: null,
+        shooterNextFires: null,
+      };
 
       this.add.image(game.canvas.width / 2, 2100, 'line');
 
@@ -70,7 +76,8 @@ const scenes = {
             rand < 0.05 ? 'none'
             : rand < 0.15 ? 'brick2xBall'
             : rand < 0.25 ? 'brickShell'
-            : rand < 0.35 ? 'brickHard'
+            : rand < 0.40 ? 'brickHard'
+            : rand < 0.43 ? 'brickShooter'
             : 'brick';
 
           if (type === 'none') {
@@ -100,7 +107,7 @@ const scenes = {
       this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
 
       // Adds a ball to the world, with optional params.
-      const addBall = ({onPaddle, x, y, velocity}) => {
+      this.addBall = ({onPaddle, x, y, velocity}) => {
         x = x || game.canvas.width / 2;
         y = y || 2050;
         velocity = velocity || {x: 0, y: 0};
@@ -116,18 +123,6 @@ const scenes = {
 
         this.physics.add.collider(ball, this.bricks, (ball, brick) => {
           const typeStrategy = {
-            brick2xBall() {
-              addBall({
-                x: ball.x,
-                y: ball.y,
-                velocity: {
-                  x: ball.body.velocity.x,
-                  y: -ball.body.velocity.y
-                }
-              });
-
-              brick.disableBody(true, true);
-            },
             brick() {
               brick.disableBody(true, true);
             },
@@ -155,6 +150,23 @@ const scenes = {
               newBrick
                 .type = 'brick';
               this.bricks.add(newBrick, true);
+            },
+            brick2xBall: () => {
+              this.addBall({
+                x: ball.x,
+                y: ball.y,
+                velocity: {
+                  x: ball.body.velocity.x,
+                  y: -ball.body.velocity.y
+                }
+              });
+
+              brick.disableBody(true, true);
+            },
+            brickShooter: () => {
+              this.timers.shooterExpiration = Date.now() + 5000;
+
+              brick.disableBody(true, true);
             },
           };
 
@@ -184,7 +196,7 @@ const scenes = {
       addBrickRow();
       setInterval(addBrickRow, 5000);
 
-      addBall({onPaddle: true});
+      this.addBall({onPaddle: true});
 
       this.input.on('pointermove', (pointer) => {
         //  Keep the paddle within the game
@@ -207,6 +219,7 @@ const scenes = {
       }, this);
     },
     update() {
+      // Remove extra balls that fall below the paddle.
       this.balls = this.balls.filter((ball) => {
         if (ball.y > this.paddle.y && this.balls.length > 1) {
           ball.disableBody(true, true);
@@ -215,6 +228,56 @@ const scenes = {
 
         return true;
       });
+
+      // Handle power-up timers.
+      if (this.timers.shooterExpiration) {
+        // Shooter expired.
+        if (Date.now() > this.timers.shooterExpiration) {
+          this.timers.shooterExpiration = null;
+          this.timers.shooterNextFires = null;
+        }
+        if (!this.timers.shooterNextFires || Date.now() > this.timers.shooterNextFires) {
+          // TODO: Fire!
+          const bullet = this.physics.add.image(this.paddle.x, this.paddle.y, 'bullet')
+            .setVelocity(0, -2000);
+          this.physics.add.collider(bullet, this.bricks, (bullet, brick) => {
+            const typeStrategy = {
+              brick() {
+                brick.disableBody(true, true);
+              },
+              brickShell: () => {
+                brick.disableBody(true, true);
+              },
+              brickHard: () => {
+                brick.disableBody(true, true);
+              },
+              brick2xBall: () => {
+                this.addBall({
+                  x: brick.x,
+                  y: brick.y,
+                  velocity: {
+                    x: 0,
+                    y: 2000,
+                  }
+                });
+
+                brick.disableBody(true, true);
+              },
+              brickShooter: () => {
+                // TODO: Show some kind of animation to indicate that time was extended.
+                this.timers.shooterExpiration = Date.now() + 5000;
+
+                brick.disableBody(true, true);
+              },
+            };
+
+            typeStrategy[brick.type]();
+            bullet.disableBody(true, true);
+          }, null, this);
+
+          this.timers.shooterNextFires = Date.now() + 250;
+        }
+      }
     },
   },
   pause: {

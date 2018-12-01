@@ -3,7 +3,9 @@
 ### Features
 * Scoring
 * Fail state
-* Shooter power-up
+
+### Polish
+* On touch devices, don't snap paddle to finger. Instead, move paddle by distance finger moved since touch started.
 
 ## Juice
 * Create a general effect for when objects are destroyed. Should create a new image in place of the destroyed object with the same texture. To start with, have it sink, rotate a bit randomly, fade out, and then destroy itself.

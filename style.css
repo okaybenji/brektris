@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  background: gray;
+  width: 100%;
+  text-align: center;
+}
+
+canvas {
+  width: 46.18vh;
+  height: 100vh;
+  margin: auto;
+  display: inline;
+}

@@ -67,10 +67,15 @@ const scenes = {
           const rand = Math.random();
 
           const type =
-            rand < 0.15 ? 'brick2xBall'
+            rand < 0.05 ? 'none'
+            : rand < 0.15 ? 'brick2xBall'
             : rand < 0.25 ? 'brickShell'
             : rand < 0.35 ? 'brickHard'
             : 'brick';
+
+          if (type === 'none') {
+            return;
+          }
 
           const brick = new Phaser.Physics.Arcade.Sprite(this, x, -40, type);
           brick.type = type;
@@ -79,7 +84,8 @@ const scenes = {
         };
 
         const bricks = [...Array(7)]
-          .map((x, i) => createBrick(82 + 160 * i));
+          .map((x, i) => createBrick(82 + 160 * i))
+          .filter(brick => brick);
         this.bricks.addMultiple(bricks, true);
 
         this.bricks.getChildren().forEach((brick) => {

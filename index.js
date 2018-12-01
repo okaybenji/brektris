@@ -49,11 +49,14 @@ const scenes = {
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');
+      this.load.image('line', 'img/dotted-line.png');
     },
     create() {
       this.physics.world.setBoundsCollision(true);
 
       this.bricks = this.physics.add.staticGroup();
+
+      this.add.image(game.canvas.width / 2, 2100, 'line');
 
       const addBrickRow = () => {
         const bricks = [...Array(7)]

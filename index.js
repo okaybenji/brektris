@@ -56,15 +56,17 @@ const scenes = {
       this.bricks = this.physics.add.staticGroup();
 
       const addBrickRow = () => {
-        this.bricks.getChildren()
-          .forEach(brick => {
-            brick.y += 100;
-            brick.body.y += 100;
-          });
-
         const bricks = [...Array(11)]
-          .map((x, i) => new Phaser.Physics.Arcade.Sprite(this, 63 + 100 * i, 70, 'brick'));
+          .map((x, i) => new Phaser.Physics.Arcade.Sprite(this, 63 + 100 * i, -40, 'brick'));
         this.bricks.addMultiple(bricks, true);
+
+        this.bricks.getChildren().forEach((brick) => {
+          this.tweens.add({
+            targets: [brick, brick.body],
+            y: brick.y + 100,
+            duration: 1000,
+          });
+        });
       };
 
       addBrickRow();

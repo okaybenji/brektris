@@ -46,22 +46,34 @@ const scenes = {
   },
   play: {
     preload() {
-      this.load.atlas('assets', 'img/breakout.png', 'img/breakout.json');
+      this.load.image('paddle', 'img/paddle.png');
+      this.load.image('ball', 'img/ball.png');
+      this.load.image('brick', 'img/brick.png');
     },
     create() {
       this.physics.world.setBoundsCollision(true);
 
-      //  Create the bricks in a 10x6 grid
-      this.bricks = this.physics.add.staticGroup({
-        key: 'assets', frame: [ 'blue1', 'red1', 'green1', 'yellow1', 'silver1', 'purple1' ],
-        frameQuantity: 15,
-        gridAlign: { width: 15, height: 6, cellWidth: 64, cellHeight: 32, x: 112, y: 100 }
-      });
+      this.bricks = this.physics.add.staticGroup();
 
-      this.ball = this.physics.add.image(400, 500, 'assets', 'ball1').setCollideWorldBounds(true).setBounce(1);
+      const addBrickRow = () => {
+        this.bricks.getChildren()
+          .forEach(brick => {
+            brick.y += 100;
+            brick.body.y += 100;
+          });
+
+        const bricks = [...Array(11)]
+          .map((x, i) => new Phaser.Physics.Arcade.Sprite(this, 63 + 100 * i, 70, 'brick'));
+        this.bricks.addMultiple(bricks, true);
+      };
+
+      addBrickRow();
+      setInterval(addBrickRow, 5000);
+
+      this.ball = this.physics.add.image(400, 2350, 'ball').setCollideWorldBounds(true).setBounce(1);
       this.ball.setData('onPaddle', true);
 
-      this.paddle = this.physics.add.image(400, 2400, 'assets', 'paddle1').setImmovable();
+      this.paddle = this.physics.add.image(400, 2400, 'paddle').setImmovable();
 
       //  Our colliders
       this.physics.add.collider(this.ball, this.bricks, (ball, brick) => brick.disableBody(true, true), null, this);
@@ -95,7 +107,7 @@ const scenes = {
 
       this.input.on('pointerup', (pointer) => {
         if (this.ball.getData('onPaddle')) {
-          this.ball.setVelocity(-75, -600);
+          this.ball.setVelocity(-75, -2000);
           this.ball.setData('onPaddle', false);
         }
       }, this);

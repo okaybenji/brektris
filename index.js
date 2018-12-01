@@ -97,14 +97,14 @@ const scenes = {
         }
       }, null, this);
 
-      //  Input events
       this.input.on('pointermove', (pointer) => {
-          //  Keep the paddle within the game
-          this.paddle.x = Phaser.Math.Clamp(pointer.x, 52, 1073);
+        //  Keep the paddle within the game
+        const margin = this.paddle.width / 3;
+        this.paddle.x = Phaser.Math.Clamp(pointer.x, margin, game.canvas.width - margin);
 
-          if (this.ball.getData('onPaddle')) {
-            this.ball.x = this.paddle.x;
-          }
+        if (this.ball.getData('onPaddle')) {
+          this.ball.x = this.paddle.x;
+        }
       }, this);
 
       this.input.on('pointerup', (pointer) => {

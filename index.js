@@ -49,6 +49,7 @@ const scenes = {
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');
+      this.load.image('brick-2xball', 'img/brick-2xball.png');
       this.load.image('line', 'img/dotted-line.png');
     },
     create() {
@@ -60,8 +61,16 @@ const scenes = {
       this.add.image(game.canvas.width / 2, 2100, 'line');
 
       const addBrickRow = () => {
+        const createBrick = (x) => {
+          const type = Math.random() < 0.1 ? 'brick-2xball' : 'brick';
+          const brick = new Phaser.Physics.Arcade.Sprite(this, x, -40, type);
+          brick.type = type;
+
+          return brick;
+        };
+
         const bricks = [...Array(7)]
-          .map((x, i) => new Phaser.Physics.Arcade.Sprite(this, 82 + 160 * i, -40, 'brick'));
+          .map((x, i) => createBrick(82 + 160 * i));
         this.bricks.addMultiple(bricks, true);
 
         this.bricks.getChildren().forEach((brick) => {
@@ -73,33 +82,36 @@ const scenes = {
         });
       };
 
-      /**
-       * Adds a ball to the world.
-       * @param {Ball} fromBall Optional. New ball will be cloned from this one.
-       */
-      const addBall = (fromBall) => {
-        let x, y, velocity;
+      this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
 
-        if (fromBall) {
-          x = fromBall.x;
-          y = fromBall.y;
-          velocity = fromBall.body.velocity;
-        } else {
-          x = game.canvas.width / 2;
-          y = 2050;
-          velocity = {x: 0, y: 0};
-        }
+      // Adds a ball to the world, with optional params.
+      const addBall = ({onPaddle, x, y, velocity}) => {
+        x = x || game.canvas.width / 2;
+        y = y || 2050;
+        velocity = velocity || {x: 0, y: 0};
 
         const ball = this.physics.add.image(x, y, 'ball')
           .setCollideWorldBounds(true)
           .setBounce(1)
           .setVelocity(velocity.x, velocity.y);
 
-        if (!fromBall) {
+        if (onPaddle) {
           ball.setData('onPaddle', true);
         }
 
-        this.physics.add.collider(ball, this.bricks, (ball, brick) => brick.disableBody(true, true), null, this);
+        this.physics.add.collider(ball, this.bricks, (ball, brick) => {
+          if (brick.type === 'brick-2xball') {
+            addBall({
+              x: ball.x,
+              y: ball.y,
+              velocity: {
+                x: ball.body.velocity.x,
+                y: -ball.body.velocity.y
+              }
+            });
+          }
+          brick.disableBody(true, true)
+        }, null, this);
         this.physics.add.collider(ball, this.paddle, (ball, paddle) => {
           if (ball.x < paddle.x) {
             //  Ball is on the left-hand side of the paddle
@@ -124,12 +136,7 @@ const scenes = {
       addBrickRow();
       setInterval(addBrickRow, 5000);
 
-      addBall();
-      setInterval(() => {
-        addBall(this.balls[0]);
-      }, 5000);
-
-      this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
+      addBall({onPaddle: true});
 
       this.input.on('pointermove', (pointer) => {
         //  Keep the paddle within the game

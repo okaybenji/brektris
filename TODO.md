@@ -16,6 +16,7 @@
 ### Bug Fixes
 * Hard bricks shouldn't budge when they change to regular bricks
 * Should not be possible to get a full row of shell bricks
+* Ball should not bounce off gems
 
 ## General
 * Menus

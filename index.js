@@ -117,6 +117,27 @@ const scenes = {
             const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'brickGem');
             newBrick.type = 'brickGem';
             this.bricks.add(newBrick, true);
+
+            // If the old brick was tweening, copy the remaining tween to the new brick.
+            const tweenIndex = this.tweens._active.findIndex(activeTween => {
+              return activeTween.targets.find(target => {
+                return target === brick;
+              });
+            });
+
+            if (tweenIndex === -1) {
+              return; // Not tweening.
+            }
+
+            const tween = this.tweens._active[tweenIndex];
+            const tweenData = tween.data ? tween.data[0] : null;
+
+            this.tweens.add({
+              targets: newBrick,
+              props: {
+                y: { value: tweenData.end, duration: tweenData.duration - tweenData.elapsed },
+              },
+            });
           },
           brick2xBall: () => {
             this.addBall({

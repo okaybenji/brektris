@@ -247,10 +247,17 @@ const scenes = {
 
       this.addBall({onPaddle: true});
 
+      this.input.on('pointerdown', (pointer) => {
+        this.paddleStart = this.paddle.x;
+      });
+
       this.input.on('pointermove', (pointer) => {
         //  Keep the paddle within the game
         const margin = this.paddle.width / 3;
-        this.paddle.x = Phaser.Math.Clamp(pointer.x, margin, game.canvas.width - margin);
+
+        const paddleX = pointer.isDown ? this.paddleStart + pointer.x - pointer.downX : pointer.x;
+
+        this.paddle.x = Phaser.Math.Clamp(paddleX, margin, game.canvas.width - margin);
 
         const ballOnPaddle = this.balls.find(b => b.getData('onPaddle'));
         if (ballOnPaddle) {

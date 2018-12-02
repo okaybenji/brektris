@@ -83,7 +83,7 @@ const scenes = {
             brick.disableBody(true, true);
 
             // Add a floating gem.
-            const gem = this.physics.add.image(brick.x, brick.y, 'gem');
+            const gem = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'gem');
             gem.type = 'gem';
             this.bricks.add(gem, true);
           },
@@ -302,6 +302,9 @@ const config = {
   pixelArt: true,
   physics: {
     default: 'arcade',
+    arcade: {
+      // debug: true
+    }
   },
   scene: scenes.play,
 };

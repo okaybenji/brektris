@@ -115,7 +115,7 @@ const scenes = {
               y: collider.y,
               velocity: {
                 x: collider.body.velocity.x,
-                y: -collider.body.velocity.y
+                y: -collider.body.velocity.y || 2000
               }
             });
 

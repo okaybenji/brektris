@@ -92,13 +92,22 @@ const scenes = {
             if (collider.body.blocked.down) {
               brick.disableBody(true, true);
             } else {
+              if (brick.tweening) {
+                return;
+              }
+
+              brick.tweening = true;
+
               this.tweens.add({
                 targets: brick,
                 props: {
                   x: { value: brick.x + 10, duration: 50 },
                 },
                 yoyo: true,
-                repeat: 2
+                repeat: 2,
+                onComplete() {
+                  brick.tweening = false;
+                }
               });
             }
           },

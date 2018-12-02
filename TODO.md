@@ -15,7 +15,7 @@
 
 ### Bug Fixes
 * Hard bricks shouldn't budge when they change to regular bricks
-* Hitting a shell brick while it's tweening can cause it to move
+* Should not be possible to get a full row of shell bricks
 
 ## General
 * Menus

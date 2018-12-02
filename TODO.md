@@ -20,3 +20,4 @@
 ## General
 * Menus
 * Credits
+* Shop where players can spend points to unlock/upgrade power-ups (increase duration, cause them to appear more often, maybe shooter can upgrade to destroy shell bricks)

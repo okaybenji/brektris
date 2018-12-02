@@ -49,10 +49,12 @@ const scenes = {
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');
+      this.load.image('brickGem', 'img/brickGem.png');
       this.load.image('brickShell', 'img/brickShell.png');
       this.load.image('brickHard', 'img/brickHard.png');
       this.load.image('brick2xBall', 'img/brick2xBall.png');
       this.load.image('brickShooter', 'img/brickShooter.png');
+      this.load.image('gem', 'img/gem.png');
       this.load.image('bullet', 'img/bullet.png');
       this.load.image('line', 'img/dotted-line.png');
     },
@@ -68,11 +70,70 @@ const scenes = {
 
       this.add.image(game.canvas.width / 2, 2100, 'line');
 
+      // Determine strategy for dealing with different brick types.
+      this.getTypeStrategy = (collider, brick) => {
+        return {
+          gem: () => {
+            brick.disableBody(true, true);
+          },
+          brick: () => {
+            brick.disableBody(true, true);
+          },
+          brickGem: () => {
+            brick.disableBody(true, true);
+
+            // Add a floating gem.
+            const gem = this.physics.add.image(brick.x, brick.y, 'gem');
+            gem.type = 'gem';
+            this.bricks.add(gem, true);
+          },
+          brickShell: () => {
+            // Must hit it from above.
+            if (collider.body.blocked.down) {
+              brick.disableBody(true, true);
+            } else {
+              this.tweens.add({
+                targets: brick,
+                props: {
+                  x: { value: brick.x + 10, duration: 50 },
+                },
+                yoyo: true,
+                repeat: 2
+              });
+            }
+          },
+          brickHard: () => {
+            // Turns into regular brick.
+            brick.disableBody(true, true);
+            const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'brickGem');
+            newBrick.type = 'brickGem';
+            this.bricks.add(newBrick, true);
+          },
+          brick2xBall: () => {
+            this.addBall({
+              x: collider.x,
+              y: collider.y,
+              velocity: {
+                x: collider.body.velocity.x,
+                y: -collider.body.velocity.y
+              }
+            });
+
+            brick.disableBody(true, true);
+          },
+          brickShooter: () => {
+            this.timers.shooterExpiration = Date.now() + 5000;
+
+            brick.disableBody(true, true);
+          },
+        };
+      };
+
       const addBrickRow = () => {
         const createBrick = (x) => {
           const rand = Math.random();
 
-          const type =
+          let type =
             rand < 0.05 ? 'none'
             : rand < 0.15 ? 'brick2xBall'
             : rand < 0.25 ? 'brickShell'
@@ -122,56 +183,10 @@ const scenes = {
         }
 
         this.physics.add.collider(ball, this.bricks, (ball, brick) => {
-          const typeStrategy = {
-            brick() {
-              brick.disableBody(true, true);
-            },
-            brickShell: () => {
-              // Must hit it from above.
-              if (ball.body.blocked.down) {
-                brick.disableBody(true, true);
-              } else {
-                this.tweens.add({
-                  targets: brick,
-                  props: {
-                    x: { value: brick.x + 10, duration: 50 },
-                  },
-                  yoyo: true,
-                  repeat: 2
-                });
-              }
-            },
-            brickHard: () => {
-              // Turns into regular brick.
-              const x = brick.x;
-              const y = brick.y;
-              brick.disableBody(true, true);
-              const newBrick = new Phaser.Physics.Arcade.Sprite(this, x, y, 'brick');
-              newBrick
-                .type = 'brick';
-              this.bricks.add(newBrick, true);
-            },
-            brick2xBall: () => {
-              this.addBall({
-                x: ball.x,
-                y: ball.y,
-                velocity: {
-                  x: ball.body.velocity.x,
-                  y: -ball.body.velocity.y
-                }
-              });
-
-              brick.disableBody(true, true);
-            },
-            brickShooter: () => {
-              this.timers.shooterExpiration = Date.now() + 5000;
-
-              brick.disableBody(true, true);
-            },
-          };
-
+          const typeStrategy = this.getTypeStrategy(ball, brick);
           typeStrategy[brick.type]();
         }, null, this);
+
         this.physics.add.collider(ball, this.paddle, (ball, paddle) => {
           if (ball.x < paddle.x) {
             //  Ball is on the left-hand side of the paddle
@@ -241,36 +256,7 @@ const scenes = {
           const bullet = this.physics.add.image(this.paddle.x, this.paddle.y, 'bullet')
             .setVelocity(0, -2000);
           this.physics.add.collider(bullet, this.bricks, (bullet, brick) => {
-            const typeStrategy = {
-              brick() {
-                brick.disableBody(true, true);
-              },
-              brickShell: () => {
-                brick.disableBody(true, true);
-              },
-              brickHard: () => {
-                brick.disableBody(true, true);
-              },
-              brick2xBall: () => {
-                this.addBall({
-                  x: brick.x,
-                  y: brick.y,
-                  velocity: {
-                    x: 0,
-                    y: 2000,
-                  }
-                });
-
-                brick.disableBody(true, true);
-              },
-              brickShooter: () => {
-                // TODO: Show some kind of animation to indicate that time was extended.
-                this.timers.shooterExpiration = Date.now() + 5000;
-
-                brick.disableBody(true, true);
-              },
-            };
-
+            const typeStrategy = this.getTypeStrategy(bullet, brick);
             typeStrategy[brick.type]();
             bullet.disableBody(true, true);
           }, null, this);

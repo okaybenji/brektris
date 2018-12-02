@@ -72,6 +72,29 @@ const scenes = {
 
       // Determine strategy for dealing with different brick types.
       this.getTypeStrategy = (collider, brick) => {
+        // If the old brick was tweening, copy the remaining tween to the new brick.
+        const copyTween = (oldBrick, newBrick) => {
+          const tweenIndex = this.tweens._active.findIndex(activeTween => {
+            return activeTween.targets.find(target => {
+              return target === oldBrick;
+            });
+          });
+
+          if (tweenIndex === -1) {
+            return; // Not tweening.
+          }
+
+          const tween = this.tweens._active[tweenIndex];
+          const tweenData = tween.data ? tween.data[0] : null;
+
+          this.tweens.add({
+            targets: newBrick,
+            props: {
+              y: { value: tweenData.end, duration: tweenData.duration - tweenData.elapsed },
+            },
+          });
+        };
+
         return {
           gem: () => {
             brick.disableBody(true, true);
@@ -86,6 +109,7 @@ const scenes = {
             const gem = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'gem');
             gem.type = 'gem';
             this.bricks.add(gem, true);
+            copyTween(brick, gem);
           },
           brickShell: () => {
             // Must hit it from above.
@@ -117,27 +141,7 @@ const scenes = {
             const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'brickGem');
             newBrick.type = 'brickGem';
             this.bricks.add(newBrick, true);
-
-            // If the old brick was tweening, copy the remaining tween to the new brick.
-            const tweenIndex = this.tweens._active.findIndex(activeTween => {
-              return activeTween.targets.find(target => {
-                return target === brick;
-              });
-            });
-
-            if (tweenIndex === -1) {
-              return; // Not tweening.
-            }
-
-            const tween = this.tweens._active[tweenIndex];
-            const tweenData = tween.data ? tween.data[0] : null;
-
-            this.tweens.add({
-              targets: newBrick,
-              props: {
-                y: { value: tweenData.end, duration: tweenData.duration - tweenData.elapsed },
-              },
-            });
+            copyTween(brick, newBrick);
           },
           brick2xBall: () => {
             this.addBall({

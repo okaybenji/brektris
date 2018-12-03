@@ -46,6 +46,8 @@ const scenes = {
   },
   play: {
     preload() {
+      game.activeScene = this;
+
       this.load.image('paddle', 'img/paddle.png');
       this.load.image('ball', 'img/ball.png');
       this.load.image('brick', 'img/brick.png');

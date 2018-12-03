@@ -23,6 +23,7 @@ const depth = 100; // Default depth for all 3D objects.
 /** Set up the scene **/
 const paddleGeo = new THREE.BoxGeometry( 200, 40, depth );
 const ballGeo = new THREE.BoxGeometry( 40, 40, depth );
+const bulletGeo = new THREE.BoxGeometry( 20, 20, depth );
 const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 
 //  const paddleMaterial = new THREE.ShaderMaterial({fragmentShader});
@@ -40,6 +41,7 @@ paddle.position.y = -2100;
 
 let balls = [];
 let bricks = [];
+let bullets = [];
 
 let p;
 
@@ -69,15 +71,35 @@ const render = () => {
         const color =
           b.type === 'brick' ? purple
           : b.type === 'brickHard' ? pink
+          : b.type === 'gem' ? pink
           : b.type === 'brickShell' ? yellow
           : purple;
 
-        const brick = new THREE.Mesh(brickGeo, color);
+        const mesh = b.type === 'gem' ? ballGeo : brickGeo;
+
+        const brick = new THREE.Mesh(mesh, color);
         scene.add(brick);
         brick.position.x = b.x;
         brick.position.y = -b.y;
 
+        if (b.type === 'gem') {
+          brick.rotation.z = 90;
+        }
+
         return brick;
+      });
+
+    bullets.forEach(b => scene.remove(b));
+    bullets = p.bullets.getChildren()
+      .filter(b => b.active)
+      .map(b => {
+        const bullet = new THREE.Mesh(bulletGeo, white);
+        scene.add(bullet);
+        bullet.position.x = b.x;
+        bullet.position.y = -b.y;
+        bullet.rotation.z = 90;
+
+        return bullet;
       });
   }
 

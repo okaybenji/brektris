@@ -1,13 +1,24 @@
 body {
   margin: 0;
-  background: gray;
   width: 100%;
-  text-align: center;
 }
 
 canvas {
+  left: 0;
+  position: absolute;
   width: 46.18vh;
   height: 100vh;
-  margin: auto;
-  display: inline;
+  opacity: 0; /* Set to 0 to hide */
+}
+
+main canvas {
+  left: 0;
+  z-index: -1;
+  opacity: 1;
+}
+
+main {
+  width: 46.18vh;
+  height: 100vh;
+  float: right;
 }

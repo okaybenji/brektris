@@ -6,7 +6,7 @@ body {
 canvas {
   left: 0;
   position: absolute;
-  width: 46.18vh;
+  width: 100vw;
   height: 100vh;
   opacity: 0; /* Set to 0 to hide */
 }
@@ -18,7 +18,7 @@ main canvas {
 }
 
 main {
-  width: 46.18vh;
+  width: 100vw;
   height: 100vh;
   float: right;
 }

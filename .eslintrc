@@ -10,6 +10,7 @@
 
     "globals": {
         "Howl": true,
-        "Phaser": true
+        "Phaser": true,
+        "THREE": true
     }
 }

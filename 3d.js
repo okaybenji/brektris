@@ -14,6 +14,7 @@ camera.rotation.x = 0.25;
 // We create the WebGL renderer and add it to the document
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( main.offsetWidth, main.offsetHeight );
+
 $('main').appendChild( renderer.domElement );
 
 // Get the shader code

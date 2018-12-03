@@ -7,9 +7,6 @@
 
     <title>brektris</title>
 
-    <script src="./vendor/phaser.min.js"></script>
-    <script src="./vendor/howler.min.js"></script>
-    <script src="index.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 
@@ -27,4 +24,17 @@
          type="image/png"
          href="img/icon.png">
   </head>
+  <body>
+    <script id="fragShader" type="shader-code">
+    void main() {
+      gl_FragColor = vec4(0.0, 1.0, 0.5, 1.0);
+    }
+  </script>
+    <main></main>
+  </body>
+  <script src="./vendor/phaser.min.js"></script>
+  <script src="./vendor/howler.min.js"></script>
+  <script src="./vendor/three.min.js"></script>
+  <script src="index.js"></script>
+  <script src="3d.js"></script>
 </html>

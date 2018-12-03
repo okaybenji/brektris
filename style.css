@@ -10,4 +10,24 @@ canvas {
   height: 100vh;
   margin: auto;
   display: inline;
+  float: left;
+  opacity: 1; /* Set to 0 to hide. */
+}
+
+/*
+.three {
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  opacity: 1;
+}
+*/
+
+main {
+  width: 46.18vh;
+  height: 100vh;
+  margin: auto;
+  display: inline;
+  background: white;
+  float: right;
 }

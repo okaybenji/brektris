@@ -18,7 +18,7 @@ $('main').appendChild( renderer.domElement );
 // Get the shader code
 const fragmentShader = document.getElementById('fragShader').innerHTML;
 
-const depth = 100; // Default depth for all 3D objects.
+const depth = 50; // Default depth for all 3D objects.
 
 /** Set up the scene **/
 const paddleGeo = new THREE.BoxGeometry( 200, 40, depth );
@@ -30,14 +30,34 @@ const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 //const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
 
 // Define materials.
-const white = new THREE.MeshBasicMaterial( { color: 0xffffff} );
-const pink = new THREE.MeshBasicMaterial( { color: 0xff1951} );
-const purple = new THREE.MeshBasicMaterial( { color: 0x9c5cff} );
-const yellow = new THREE.MeshBasicMaterial( { color: 0xffdc00} );
+const white = new THREE.MeshLambertMaterial( { color: 0xffffff} );
+const grey = new THREE.MeshLambertMaterial( { color: 0x666666} );
+const pink = new THREE.MeshLambertMaterial( { color: 0xff1951} );
+const purple = new THREE.MeshLambertMaterial( { color: 0x9c5cff} );
+const yellow = new THREE.MeshLambertMaterial( { color: 0xffdc00} );
+
+//const bgGeo = new THREE.PlaneGeometry( main.offsetWidth, main.offsetHeight );
+//const bg = new THREE.Mesh( bgGeo, grey );
+//bg.position.x = 570;
+//bg.position.y = -1000;
+//bg.position.z = -200;
+//scene.add(bg);
 
 paddle = new THREE.Mesh( paddleGeo, white );
 scene.add( paddle );
 paddle.position.y = -2100;
+
+// White directional light at half intensity shining from the top.
+//const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
+//light.position.z = 1;
+//light.position.y = 0;
+
+const ambientLight = new THREE.AmbientLight( 0xBBBBBB );
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight( 0xffffff, 0.5, 0 );
+pointLight.position.set(570, -1000, 300);
+scene.add( pointLight );
 
 let balls = [];
 let bricks = [];
@@ -47,6 +67,10 @@ let p;
 
 /** Animate the scene. **/
 const render = () => {
+  // Move the camera around for fun.
+  camera.rotation.x = Math.sin(Date.now() / 2000) / 2;
+  camera.position.y = -(Math.sin(Date.now() / 2000) * 1000) - 1000;
+
   // Get the Phaser scene.
   p = game.activeScene;
 
@@ -83,7 +107,7 @@ const render = () => {
         brick.position.y = -b.y;
 
         if (b.type === 'gem') {
-          brick.rotation.z = 90;
+          brick.rotation.z = 180;
         }
 
         return brick;

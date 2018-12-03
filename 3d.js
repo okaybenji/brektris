@@ -70,7 +70,7 @@ const render = () => {
           b.type === 'brick' ? purple
           : b.type === 'brickHard' ? pink
           : b.type === 'brickShell' ? yellow
-          : pink;
+          : purple;
 
         const brick = new THREE.Mesh(brickGeo, color);
         scene.add(brick);

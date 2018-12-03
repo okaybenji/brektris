@@ -5,10 +5,11 @@ const main = $('main');
 /** Set up Three.js **/
 // First we initialize the scene and our camera
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, main.offsetWidth / main.offsetHeight, 0.1, 10000 );
-camera.position.z += 2000;
-camera.position.y -= 1000;
-camera.position.x += 570;
+const camera = new THREE.PerspectiveCamera( 45, main.offsetWidth / main.offsetHeight, 0.1, 10000 );
+camera.position.z = 3000;
+camera.position.y = -2250;
+camera.position.x = 570;
+camera.rotation.x = 0.25;
 
 // We create the WebGL renderer and add it to the document
 const renderer = new THREE.WebGLRenderer();
@@ -69,8 +70,8 @@ let p;
 /** Animate the scene. **/
 const render = () => {
   // Move the camera around for fun.
-  camera.rotation.x = Math.sin(Date.now() / 2000) / 2;
-  camera.position.y = -(Math.sin(Date.now() / 2000) * 1000) - 1000;
+  // camera.rotation.x = Math.sin(Date.now() / 2000) / 2;
+  // camera.position.y = -(Math.sin(Date.now() / 2000) * 1000) - 1000;
 
   // Get the Phaser scene.
   p = game.activeScene;

@@ -13,6 +13,7 @@ camera.position.x += 570;
 // We create the WebGL renderer and add it to the document
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( main.offsetWidth, main.offsetHeight );
+renderer.domElement.classList.add('three');
 $('main').appendChild( renderer.domElement );
 
 // Get the shader code

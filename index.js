@@ -64,6 +64,7 @@ const scenes = {
       this.physics.world.setBoundsCollision(true);
 
       this.bricks = this.physics.add.staticGroup();
+      this.bullets = this.physics.add.group();
       this.balls = [];
       this.timers = {
         shooterExpiration: null,
@@ -164,6 +165,12 @@ const scenes = {
           },
         };
       };
+
+      this.physics.add.collider(this.bullets, this.bricks, (bullet, brick) => {
+        const typeStrategy = this.getTypeStrategy(bullet, brick);
+        typeStrategy[brick.type]();
+        bullet.disableBody(true, true);
+      }, null, this);
 
       const addBrickRow = () => {
         const createBrick = (x) => {
@@ -295,15 +302,9 @@ const scenes = {
           this.timers.shooterNextFires = null;
         }
         if (!this.timers.shooterNextFires || Date.now() > this.timers.shooterNextFires) {
-          // TODO: Fire!
-          const bullet = this.physics.add.image(this.paddle.x, this.paddle.y, 'bullet')
-            .setVelocity(0, -2000);
-          this.physics.add.collider(bullet, this.bricks, (bullet, brick) => {
-            const typeStrategy = this.getTypeStrategy(bullet, brick);
-            typeStrategy[brick.type]();
-            bullet.disableBody(true, true);
-          }, null, this);
-
+          const bullet = new Phaser.Physics.Arcade.Sprite(this, this.paddle.x, this.paddle.y, 'bullet')
+          this.bullets.add(bullet, true);
+          bullet.setVelocity(0, -2000);
           this.timers.shooterNextFires = Date.now() + 250;
         }
       }

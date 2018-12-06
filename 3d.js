@@ -24,8 +24,9 @@ const depth = 50; // Default depth for all 3D objects.
 
 /** Set up the scene **/
 const paddleGeo = new THREE.BoxGeometry( 200, 40, depth );
-const ballGeo = new THREE.BoxGeometry( 40, 40, depth );
-const bulletGeo = new THREE.BoxGeometry( 20, 20, depth );
+const ballGeo = new THREE.BoxGeometry( 40, 40, 40 );
+const gemGeo = new THREE.BoxGeometry( 30, 30, 30 );
+const bulletGeo = new THREE.BoxGeometry( 20, 20, 20 );
 const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 
 //  const paddleMaterial = new THREE.ShaderMaterial({fragmentShader});
@@ -53,6 +54,8 @@ paddle.position.y = -2100;
 //const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
 //light.position.z = 1;
 //light.position.y = 0;
+
+let gemRotation = 0;
 
 const ambientLight = new THREE.AmbientLight( 0xBBBBBB );
 scene.add(ambientLight);
@@ -101,7 +104,7 @@ const render = () => {
           : b.type === 'brickShell' ? yellow
           : purple;
 
-        const mesh = b.type === 'gem' ? ballGeo : brickGeo;
+        const mesh = b.type === 'gem' ? gemGeo : brickGeo;
 
         const brick = new THREE.Mesh(mesh, color);
         scene.add(brick);
@@ -109,7 +112,9 @@ const render = () => {
         brick.position.y = -b.y;
 
         if (b.type === 'gem') {
-          brick.rotation.z = 180;
+          brick.rotation.z = 45;
+          brick.rotation.x = 45;
+          brick.rotation.y = gemRotation;
         }
 
         return brick;
@@ -123,11 +128,12 @@ const render = () => {
         scene.add(bullet);
         bullet.position.x = b.x;
         bullet.position.y = -b.y;
-        bullet.rotation.z = 90;
 
         return bullet;
       });
   }
+
+  gemRotation += 0.05;
 
   requestAnimationFrame( render );
   renderer.render( scene, camera );

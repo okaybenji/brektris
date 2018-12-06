@@ -5,15 +5,15 @@ body {
 }
 
 canvas {
-  left: 5vw;
+  left: 46.18vh; /* Match to main canvas to play in 3D */
   position: absolute;
   width: 46.18vh;
   height: 100vh;
-  opacity: 0; /* Set to 0 to hide */
+  opacity: 1; /* Set to 0 to hide */
 }
 
 main canvas {
-  left: 5vw;
+  left: 0;
   z-index: -1;
   opacity: 1;
 }

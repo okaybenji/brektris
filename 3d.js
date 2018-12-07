@@ -42,12 +42,21 @@ const yellow = new THREE.MeshLambertMaterial( { color: 0xffdc00} );
 //const bg = new THREE.Mesh( bgGeo, grey );
 //bg.position.x = 570;
 //bg.position.y = -1000;
-//bg.position.z = -200;
 //scene.add(bg);
 
 paddle = new THREE.Mesh( paddleGeo, white );
 scene.add( paddle );
 paddle.position.y = -2100;
+
+const boundaryGeo = new THREE.BoxGeometry( 10, 10, 1 );
+const boundary = [...Array(50)].map((item, i) => {
+  const dot = new THREE.Mesh( boundaryGeo, white );
+  scene.add(dot);
+  dot.position.x = i * 25;
+  dot.position.y = -2100;
+
+  return dot;
+});
 
 // White directional light at half intensity shining from the top.
 //const light = new THREE.DirectionalLight( 0xffffff, 0.5 );

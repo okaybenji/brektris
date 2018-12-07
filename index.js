@@ -61,6 +61,23 @@ const scenes = {
       this.load.image('line', 'img/dotted-line.png');
     },
     create() {
+      const menu = $('#menu');
+      const restartButton = $('#restartButton');
+
+      const restart = () => {
+        this.scene.restart();
+        menu.classList.add('hidden');
+      };
+
+      restartButton.onmouseup = restart;
+      restartButton.ontouchstart = restart;
+
+      this.endGame = () => {
+        this.scene.pause();
+        menu.classList.remove('hidden');
+        clearInterval(this.rowInterval);
+      };
+
       this.points = 0;
       this.physics.world.setBoundsCollision(true);
 
@@ -255,7 +272,7 @@ const scenes = {
       };
 
       addBrickRow();
-      setInterval(addBrickRow, 5000);
+      this.rowInterval = setInterval(addBrickRow, 5000);
 
       this.addBall({onPaddle: true});
 
@@ -310,6 +327,13 @@ const scenes = {
           bullet.setVelocity(0, -2000);
           this.timers.shooterNextFires = Date.now() + 250;
         }
+      }
+
+      const shouldEndGame = this.bricks
+        .getChildren()
+        .find(brick => brick.y > this.paddle.y);
+      if (shouldEndGame) {
+        this.endGame();
       }
     },
   },

@@ -60,6 +60,6 @@ main {
   visibility: hidden;
 }
 
-#restartButton:hover {
+#restartButton:hover, #restartButton:active {
   font-size: 8vh;
 }

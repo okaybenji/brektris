@@ -33,3 +33,12 @@ main {
       right: 0;
     }
 }
+
+#points {
+  font-size: 4vh;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  position: absolute;
+  bottom: 1vh;
+  right: 1vh;
+}

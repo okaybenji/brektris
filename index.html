@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet">
 
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,6 +26,9 @@
          href="img/icon.png">
   </head>
   <body>
+    <div id="points">
+      0 gems
+    </div>
     <script id="fragShader" type="shader-code">
     void main() {
       gl_FragColor = vec4(0.0, 1.0, 0.5, 1.0);

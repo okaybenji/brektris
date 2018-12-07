@@ -61,6 +61,7 @@ const scenes = {
       this.load.image('line', 'img/dotted-line.png');
     },
     create() {
+      this.points = 0;
       this.physics.world.setBoundsCollision(true);
 
       this.bricks = this.physics.add.staticGroup();
@@ -101,6 +102,8 @@ const scenes = {
         return {
           gem: () => {
             brick.disableBody(true, true);
+            this.points++;
+            $('#points').innerHTML = `${this.points} gems`;
           },
           brick: () => {
             brick.disableBody(true, true);

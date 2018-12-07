@@ -103,7 +103,7 @@ const scenes = {
           gem: () => {
             brick.disableBody(true, true);
             this.points++;
-            $('#points').innerHTML = `${this.points} gems`;
+            $('#points').innerHTML = this.points;
           },
           brick: () => {
             brick.disableBody(true, true);

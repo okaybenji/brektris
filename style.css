@@ -3,6 +3,8 @@ body {
   background: gray;
   display: flex;
   justify-content: space-around;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
 }
 
 canvas {
@@ -35,10 +37,29 @@ main {
 }
 
 #points {
-  font-size: 4vh;
-  color: white;
-  font-family: 'Quicksand', sans-serif;
   position: absolute;
-  bottom: 1vh;
-  right: 1vh;
+  bottom: 3.5vh;
+  right: 22vw;
+  font-size: 6vh;
+  text-align: right;
+}
+
+#menu {
+  position: absolute;
+  margin: 0;
+  top: 40vh;
+  font-size: 6vh;
+  text-align: center;
+}
+
+.small {
+  font-size: 4vh;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+#restartButton:hover {
+  font-size: 8vh;
 }

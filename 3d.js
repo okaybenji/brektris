@@ -25,6 +25,7 @@ const depth = 50; // Default depth for all 3D objects.
 const paddleGeo = new THREE.BoxGeometry( 200, 40, depth );
 const ballGeo = new THREE.BoxGeometry( 40, 40, 40 );
 const gemGeo = new THREE.BoxGeometry( 30, 30, 30 );
+const scoreGemGeo = new THREE.BoxGeometry( 60, 60, 60 );
 const bulletGeo = new THREE.BoxGeometry( 20, 20, 20 );
 const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 
@@ -47,6 +48,14 @@ const yellow = new THREE.MeshLambertMaterial( { color: 0xffdc00} );
 paddle = new THREE.Mesh( paddleGeo, white );
 scene.add( paddle );
 paddle.position.y = -2100;
+
+// Goes with the UI to show how many gems have been collected.
+const scoreGem = new THREE.Mesh( scoreGemGeo, pink );
+scene.add(scoreGem);
+scoreGem.position.y = -2275
+scoreGem.position.x = 1020;
+scoreGem.rotation.z = Math.PI / 4;
+scoreGem.rotation.x = Math.PI / 4;
 
 const boundaryGeo = new THREE.BoxGeometry( 10, 10, 1 );
 const boundary = [...Array(50)].map((item, i) => {
@@ -116,13 +125,15 @@ const render = () => {
         brick.position.y = -b.y;
 
         if (b.type === 'gem') {
-          brick.rotation.z = 45;
-          brick.rotation.x = 45;
+          brick.rotation.z = Math.PI / 4;
+          brick.rotation.x = Math.PI / 4;
           brick.rotation.y = gemRotation;
         }
 
         return brick;
       });
+
+    scoreGem.rotation.y = gemRotation;
 
     bullets.forEach(b => scene.remove(b));
     bullets = p.bullets.getChildren()

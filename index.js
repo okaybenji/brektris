@@ -331,7 +331,7 @@ const scenes = {
 
       const shouldEndGame = this.bricks
         .getChildren()
-        .find(brick => brick.y > this.paddle.y);
+        .find(brick => brick.active && brick.y > this.paddle.y);
       if (shouldEndGame) {
         this.endGame();
       }

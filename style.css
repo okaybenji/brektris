@@ -47,13 +47,19 @@ main {
 #menu {
   position: absolute;
   margin: 0;
-  top: 40vh;
-  font-size: 6vh;
+  top: 35vh;
+  font-size: 5vh;
   text-align: center;
 }
 
-.small {
-  font-size: 4vh;
+.large {
+  font-size: 7vh;
+}
+
+.again {
+  font-size: 2.5vh;
+  text-decoration-style: dotted;
+  font-style: italic;
 }
 
 .hidden {

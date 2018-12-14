@@ -44,16 +44,23 @@ const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
 
 // Define materials.
 const materials = {
-  white: new THREE.MeshLambertMaterial( { color: 0xffffff} ),
-  gray: new THREE.MeshLambertMaterial( { color: 0xd8d8d8} ),
-  gem: new THREE.MeshLambertMaterial( { color: 0xff1951} ),
-  brick: new THREE.MeshLambertMaterial( { color: 0x9c5cff} ),
-  brickHard: new THREE.MeshLambertMaterial( { color: 0xff1951} ),
-  brickShell: new THREE.MeshLambertMaterial( { map: textures.brickShell} ),
-  brickGem: new THREE.MeshLambertMaterial( { map: textures.brickGem} ),
-  brick2xBall: new THREE.MeshLambertMaterial( { map: textures.brick2xBall} ),
-  brickShooter: new THREE.MeshLambertMaterial( { map: textures.brickShooter} ),
+  white: new THREE.MeshLambertMaterial({color: 0xffffff}),
+  gray: new THREE.MeshLambertMaterial({color: 0xd8d8d8}),
+  gem: new THREE.MeshLambertMaterial({color: 0xff1951}),
+  brick: new THREE.MeshLambertMaterial({color: 0x9c5cff}),
+  brickHard: new THREE.MeshLambertMaterial({color: 0xff1951}),
+  brickShellBottom: new THREE.MeshLambertMaterial({color: 0xff8b00}),
+  brickShellFront: new THREE.MeshLambertMaterial({map: textures.brickShell}),
+  brickGemFront: new THREE.MeshLambertMaterial({map: textures.brickGem}),
+  brick2xBallFront: new THREE.MeshLambertMaterial({map: textures.brick2xBall}),
+  brickShooterFront: new THREE.MeshLambertMaterial({map: textures.brickShooter}),
 };
+
+// Font face is 5th material
+materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.gem, materials.brickShellBottom, materials.brickShellFront, materials.gem];
+materials.brickGem = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickGemFront, materials.brick];
+materials.brick2xBall = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brick2xBallFront, materials.brick];
+materials.brickShooter = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickShooterFront, materials.brick];
 
 const bgGeo = new THREE.PlaneGeometry( main.offsetWidth * 3, main.offsetHeight * 3 );
 const bg = new THREE.Mesh( bgGeo, materials.gray );

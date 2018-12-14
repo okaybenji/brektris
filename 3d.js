@@ -18,6 +18,14 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 $('main').appendChild( renderer.domElement );
 
+const textureLoader = new THREE.TextureLoader();
+const textures = {
+  brickShell: textureLoader.load('img/brickShell.png'),
+  brickGem: textureLoader.load('img/brickGem.png'),
+  brick2xBall: textureLoader.load('img/brick2xBall.png'),
+  brickShooter: textureLoader.load('img/brickShooter.png'),
+};
+
 // Get the shader code
 // const fragmentShader = document.getElementById('fragShader').innerHTML;
 
@@ -35,14 +43,20 @@ const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
 
 // Define materials.
-const white = new THREE.MeshLambertMaterial( { color: 0xffffff} );
-const gray = new THREE.MeshLambertMaterial( { color: 0xd8d8d8} );
-const pink = new THREE.MeshLambertMaterial( { color: 0xff1951} );
-const purple = new THREE.MeshLambertMaterial( { color: 0x9c5cff} );
-const yellow = new THREE.MeshLambertMaterial( { color: 0xffdc00} );
+const materials = {
+  white: new THREE.MeshLambertMaterial( { color: 0xffffff} ),
+  gray: new THREE.MeshLambertMaterial( { color: 0xd8d8d8} ),
+  gem: new THREE.MeshLambertMaterial( { color: 0xff1951} ),
+  brick: new THREE.MeshLambertMaterial( { color: 0x9c5cff} ),
+  brickHard: new THREE.MeshLambertMaterial( { color: 0xff1951} ),
+  brickShell: new THREE.MeshLambertMaterial( { map: textures.brickShell} ),
+  brickGem: new THREE.MeshLambertMaterial( { map: textures.brickGem} ),
+  brick2xBall: new THREE.MeshLambertMaterial( { map: textures.brick2xBall} ),
+  brickShooter: new THREE.MeshLambertMaterial( { map: textures.brickShooter} ),
+};
 
 const bgGeo = new THREE.PlaneGeometry( main.offsetWidth * 3, main.offsetHeight * 3 );
-const bg = new THREE.Mesh( bgGeo, gray );
+const bg = new THREE.Mesh( bgGeo, materials.gray );
 bg.position.x = 570;
 bg.position.y = -1200;
 bg.position.z = -150;
@@ -50,13 +64,13 @@ bg.position.z = -150;
 bg.receiveShadow = true;
 scene.add(bg);
 
-paddle = new THREE.Mesh( paddleGeo, white );
+paddle = new THREE.Mesh( paddleGeo, materials.white );
 scene.add( paddle );
 paddle.position.y = -2100;
 paddle.castShadow = true;
 
 // Goes with the UI to show how many gems have been collected.
-const scoreGem = new THREE.Mesh( scoreGemGeo, pink );
+const scoreGem = new THREE.Mesh( scoreGemGeo, materials.gem );
 scene.add(scoreGem);
 scoreGem.position.y = -2275
 scoreGem.position.x = 1020;
@@ -66,7 +80,7 @@ scoreGem.castShadow = true;
 
 const boundaryGeo = new THREE.BoxGeometry( 10, 10, 1 );
 const boundary = [...Array(50)].map((item, i) => {
-  const dot = new THREE.Mesh( boundaryGeo, white );
+  const dot = new THREE.Mesh( boundaryGeo, materials.white );
   scene.add(dot);
   dot.position.x = i * 25;
   dot.position.y = -2100;
@@ -105,7 +119,7 @@ const render = () => {
 
     balls.forEach(b => scene.remove(b));
     balls = p.balls.map(b => {
-      const ball = new THREE.Mesh(ballGeo, white);
+      const ball = new THREE.Mesh(ballGeo, materials.white);
       ball.position.x = b.x;
       ball.position.y = -b.y;
       ball.castShadow = true;
@@ -118,16 +132,9 @@ const render = () => {
     bricks = p.bricks.getChildren()
       .filter(b => b.active)
       .map(b => {
-        const color =
-          b.type === 'brick' ? purple
-          : b.type === 'brickHard' ? pink
-          : b.type === 'gem' ? pink
-          : b.type === 'brickShell' ? yellow
-          : purple;
-
         const mesh = b.type === 'gem' ? gemGeo : brickGeo;
 
-        const brick = new THREE.Mesh(mesh, color);
+        const brick = new THREE.Mesh(mesh, materials[b.type]);
         brick.castShadow = true;
         brick.position.x = b.x;
         brick.position.y = -b.y;
@@ -148,7 +155,7 @@ const render = () => {
     bullets = p.bullets.getChildren()
       .filter(b => b.active)
       .map(b => {
-        const bullet = new THREE.Mesh(bulletGeo, white);
+        const bullet = new THREE.Mesh(bulletGeo, materials.white);
         scene.add(bullet);
         bullet.position.x = b.x;
         bullet.position.y = -b.y;

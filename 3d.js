@@ -49,6 +49,7 @@ const materials = {
   gem: new THREE.MeshLambertMaterial({color: 0xff1951}),
   brick: new THREE.MeshLambertMaterial({color: 0x9c5cff}),
   brickHard: new THREE.MeshLambertMaterial({color: 0xff1951}),
+  brickShellTop: new THREE.MeshLambertMaterial({color: 0xffdc00}),
   brickShellBottom: new THREE.MeshLambertMaterial({color: 0xff8b00}),
   brickShellFront: new THREE.MeshLambertMaterial({map: textures.brickShell}),
   brickGemFront: new THREE.MeshLambertMaterial({map: textures.brickGem}),
@@ -57,7 +58,7 @@ const materials = {
 };
 
 // Font face is 5th material
-materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.gem, materials.brickShellBottom, materials.brickShellFront, materials.gem];
+materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.brickShellTop, materials.brickShellBottom, materials.brickShellFront, materials.brickShellTop];
 materials.brickGem = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickGemFront, materials.brick];
 materials.brick2xBall = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brick2xBallFront, materials.brick];
 materials.brickShooter = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickShooterFront, materials.brick];

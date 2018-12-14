@@ -45,26 +45,34 @@ const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
 // Define materials.
 const materials = {
   white: new THREE.MeshLambertMaterial({color: 0xffffff}),
-  gray: new THREE.MeshLambertMaterial({color: 0xd8d8d8}),
+  paddle: new THREE.MeshLambertMaterial({color: 0x19a6a5}),
+  gray: new THREE.MeshLambertMaterial({color: 0xffa9dc}),
+  //pink: new THREE.MeshLambertMaterial({color: 0xffa9dc}),
+  pink: new THREE.MeshLambertMaterial({color: 0xffebf7}),
+  blue: new THREE.MeshLambertMaterial({color: 0x0100bd3}),
   gem: new THREE.MeshLambertMaterial({color: 0xff1951}),
-  brick: new THREE.MeshLambertMaterial({color: 0x9c5cff}),
-  brickHard: new THREE.MeshLambertMaterial({color: 0xff1951}),
-  brickShellTop: new THREE.MeshLambertMaterial({color: 0xffdc00}),
-  brickShellBottom: new THREE.MeshLambertMaterial({color: 0xff8b00}),
-  brickShellFront: new THREE.MeshLambertMaterial({map: textures.brickShell}),
+  brick: new THREE.MeshLambertMaterial({color: 0x9604e3}),
+  brickHard: new THREE.MeshLambertMaterial({color: 0xe03107}),
+  brickShell: new THREE.MeshLambertMaterial({color: 0xe9ea0e}),
+//  brickShellTop: new THREE.MeshLambertMaterial({color: 0xffdc00}),
+//  brickShellBottom: new THREE.MeshLambertMaterial({color: 0x81cb0c}),
+//  brickShellFront: new THREE.MeshLambertMaterial({map: textures.brickShell}),
   brickGemFront: new THREE.MeshLambertMaterial({map: textures.brickGem}),
   brick2xBallFront: new THREE.MeshLambertMaterial({map: textures.brick2xBall}),
   brickShooterFront: new THREE.MeshLambertMaterial({map: textures.brickShooter}),
+  shadow: new THREE.ShadowMaterial({
+    color: 0xeb9fcc, transparent: true, opacity: 1,
+  }),
 };
 
 // Font face is 5th material
-materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.brickShellTop, materials.brickShellBottom, materials.brickShellFront, materials.brickShellTop];
+//materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.brickShellTop, materials.brickShellBottom, materials.brickShellFront, materials.brickShellTop];
 materials.brickGem = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickGemFront, materials.brick];
 materials.brick2xBall = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brick2xBallFront, materials.brick];
 materials.brickShooter = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickShooterFront, materials.brick];
 
 const bgGeo = new THREE.PlaneGeometry( main.offsetWidth * 3, main.offsetHeight * 3 );
-const bg = new THREE.Mesh( bgGeo, materials.gray );
+const bg = new THREE.Mesh( bgGeo, materials.shadow );
 bg.position.x = 570;
 bg.position.y = -1200;
 bg.position.z = -150;
@@ -72,7 +80,14 @@ bg.position.z = -150;
 bg.receiveShadow = true;
 scene.add(bg);
 
-paddle = new THREE.Mesh( paddleGeo, materials.white );
+const bg2 = new THREE.Mesh( bgGeo, materials.pink );
+bg2.position.x = 570;
+bg2.position.y = -1200;
+bg2.position.z = -150;
+
+scene.add(bg2);
+
+paddle = new THREE.Mesh( paddleGeo, materials.paddle );
 scene.add( paddle );
 paddle.position.y = -2100;
 paddle.castShadow = true;
@@ -105,7 +120,7 @@ const spotLight = new THREE.SpotLight( 0xffffff );
 spotLight.distance = 10000;
 spotLight.position.set(570, -1400, 5000);
 spotLight.castShadow = true;
-spotLight.intensity = 0.5;
+spotLight.intensity = 0.75;
 spotLight.shadow.mapSize.width = Math.pow(2, 13);
 spotLight.shadow.mapSize.height = Math.pow(2, 13);
 scene.add( spotLight );

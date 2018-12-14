@@ -11,13 +11,15 @@ camera.position.y = -1220;
 camera.position.x = 563;
 
 // We create the WebGL renderer and add it to the document
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer( {antialias: true} );
 renderer.setSize( main.offsetWidth, main.offsetHeight );
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 $('main').appendChild( renderer.domElement );
 
 // Get the shader code
-const fragmentShader = document.getElementById('fragShader').innerHTML;
+// const fragmentShader = document.getElementById('fragShader').innerHTML;
 
 const depth = 50; // Default depth for all 3D objects.
 
@@ -30,24 +32,28 @@ const bulletGeo = new THREE.BoxGeometry( 20, 20, 20 );
 const brickGeo = new THREE.BoxGeometry( 120, 40, depth );
 
 //  const paddleMaterial = new THREE.ShaderMaterial({fragmentShader});
-//const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
+const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x55B663});
 
 // Define materials.
 const white = new THREE.MeshLambertMaterial( { color: 0xffffff} );
-const grey = new THREE.MeshLambertMaterial( { color: 0x666666} );
+const gray = new THREE.MeshLambertMaterial( { color: 0xd8d8d8} );
 const pink = new THREE.MeshLambertMaterial( { color: 0xff1951} );
 const purple = new THREE.MeshLambertMaterial( { color: 0x9c5cff} );
 const yellow = new THREE.MeshLambertMaterial( { color: 0xffdc00} );
 
-//const bgGeo = new THREE.PlaneGeometry( main.offsetWidth, main.offsetHeight );
-//const bg = new THREE.Mesh( bgGeo, grey );
-//bg.position.x = 570;
-//bg.position.y = -1000;
-//scene.add(bg);
+const bgGeo = new THREE.PlaneGeometry( main.offsetWidth * 3, main.offsetHeight * 3 );
+const bg = new THREE.Mesh( bgGeo, gray );
+bg.position.x = 570;
+bg.position.y = -1200;
+bg.position.z = -150;
+
+bg.receiveShadow = true;
+scene.add(bg);
 
 paddle = new THREE.Mesh( paddleGeo, white );
 scene.add( paddle );
 paddle.position.y = -2100;
+paddle.castShadow = true;
 
 // Goes with the UI to show how many gems have been collected.
 const scoreGem = new THREE.Mesh( scoreGemGeo, pink );
@@ -56,6 +62,7 @@ scoreGem.position.y = -2275
 scoreGem.position.x = 1020;
 scoreGem.rotation.z = Math.PI / 4;
 scoreGem.rotation.x = Math.PI / 4;
+scoreGem.castShadow = true;
 
 const boundaryGeo = new THREE.BoxGeometry( 10, 10, 1 );
 const boundary = [...Array(50)].map((item, i) => {
@@ -67,19 +74,19 @@ const boundary = [...Array(50)].map((item, i) => {
   return dot;
 });
 
-// White directional light at half intensity shining from the top.
-//const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
-//light.position.z = 1;
-//light.position.y = 0;
-
 let gemRotation = 0;
 
 const ambientLight = new THREE.AmbientLight( 0xBBBBBB );
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight( 0xffffff, 0.5, 0 );
-pointLight.position.set(570, -1000, 300);
-scene.add( pointLight );
+const spotLight = new THREE.SpotLight( 0xffffff );
+spotLight.distance = 10000;
+spotLight.position.set(570, -1400, 5000);
+spotLight.castShadow = true;
+spotLight.intensity = 0.5;
+spotLight.shadow.mapSize.width = Math.pow(2, 13);
+spotLight.shadow.mapSize.height = Math.pow(2, 13);
+scene.add( spotLight );
 
 let balls = [];
 let bricks = [];
@@ -99,9 +106,10 @@ const render = () => {
     balls.forEach(b => scene.remove(b));
     balls = p.balls.map(b => {
       const ball = new THREE.Mesh(ballGeo, white);
-      scene.add(ball);
       ball.position.x = b.x;
       ball.position.y = -b.y;
+      ball.castShadow = true;
+      scene.add(ball);
 
       return ball;
     });
@@ -120,9 +128,10 @@ const render = () => {
         const mesh = b.type === 'gem' ? gemGeo : brickGeo;
 
         const brick = new THREE.Mesh(mesh, color);
-        scene.add(brick);
+        brick.castShadow = true;
         brick.position.x = b.x;
         brick.position.y = -b.y;
+        scene.add(brick);
 
         if (b.type === 'gem') {
           brick.rotation.z = Math.PI / 4;

@@ -10,6 +10,7 @@
 * Explore art styles
 
 ### Bug Fixes
+* Can't tap the restart button on mobile
 * Should not be possible to get a full row of shell bricks
 * Ball should not bounce off gems
 

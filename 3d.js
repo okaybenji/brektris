@@ -112,6 +112,7 @@ scene.add( spotLight );
 
 let balls = [];
 let bricks = [];
+let gems = [];
 let bullets = [];
 
 let p;
@@ -140,21 +141,30 @@ const render = () => {
     bricks = p.bricks.getChildren()
       .filter(b => b.active)
       .map(b => {
-        const mesh = b.type === 'gem' ? gemGeo : brickGeo;
-
-        const brick = new THREE.Mesh(mesh, materials[b.type]);
+        const brick = new THREE.Mesh(brickGeo, materials[b.type]);
         brick.castShadow = true;
         brick.position.x = b.x;
         brick.position.y = -b.y;
         scene.add(brick);
 
-        if (b.type === 'gem') {
-          brick.rotation.z = Math.PI / 4;
-          brick.rotation.x = Math.PI / 4;
-          brick.rotation.y = gemRotation;
-        }
-
         return brick;
+      });
+
+    gems.forEach(g => scene.remove(g));
+    gems = p.gems.getChildren()
+      .filter(g => g.active)
+      .map(g => {
+        const gem = new THREE.Mesh(gemGeo, materials.gem);
+        gem.castShadow = true;
+        gem.position.x = g.x;
+        gem.position.y = -g.y;
+        scene.add(gem);
+
+        gem.rotation.z = Math.PI / 4;
+        gem.rotation.x = Math.PI / 4;
+        gem.rotation.y = gemRotation;
+
+        return gem;
       });
 
     scoreGem.rotation.y = gemRotation;

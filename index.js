@@ -82,6 +82,7 @@ const scenes = {
       this.physics.world.setBoundsCollision(true);
 
       this.bricks = this.physics.add.staticGroup();
+      this.gems = this.physics.add.staticGroup();
       this.bullets = this.physics.add.group();
       this.balls = [];
       this.timers = {
@@ -117,11 +118,6 @@ const scenes = {
         };
 
         return {
-          gem: () => {
-            brick.disableBody(true, true);
-            this.points++;
-            $('#points').innerHTML = this.points;
-          },
           brick: () => {
             brick.disableBody(true, true);
           },
@@ -131,7 +127,7 @@ const scenes = {
             // Add a floating gem.
             const gem = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'gem');
             gem.type = 'gem';
-            this.bricks.add(gem, true);
+            this.gems.add(gem, true);
             copyTween(brick, gem);
           },
           brickShell: () => {
@@ -219,13 +215,16 @@ const scenes = {
           .filter(brick => brick);
         this.bricks.addMultiple(bricks, true);
 
-        this.bricks.getChildren().forEach((brick) => {
+        const shiftDownRow = (entity) => {
           this.tweens.add({
-            targets: [brick, brick.body],
-            y: brick.y + 100,
+            targets: [entity, entity.body],
+            y: entity.y + 100,
             duration: 1000,
           });
-        });
+        };
+
+        this.bricks.getChildren().forEach(shiftDownRow);
+        this.gems.getChildren().forEach(shiftDownRow);
       };
 
       this.paddle = this.physics.add.image(game.canvas.width / 2, 2100, 'paddle').setImmovable();
@@ -249,6 +248,12 @@ const scenes = {
           const typeStrategy = this.getTypeStrategy(ball, brick);
           typeStrategy[brick.type]();
         }, null, this);
+
+        this.physics.add.overlap(ball, this.gems, (ball, gem) => {
+          gem.disableBody(true, true);
+          this.points++;
+          $('#points').innerHTML = this.points;
+        });
 
         this.physics.add.collider(ball, this.paddle, (ball, paddle) => {
           if (ball.x < paddle.x) {

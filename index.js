@@ -1,3 +1,4 @@
+const $ = query => document.querySelector(query);
 const randomIntBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const randomArrayElement = arr => arr[Math.floor(Math.random() * arr.length)];
 
@@ -375,6 +376,7 @@ const config = {
   type: Phaser.AUTO,
   width: 1125,
   height: 2436,
+  transparent: true,
   pixelArt: true,
   physics: {
     default: 'arcade',

@@ -377,7 +377,7 @@ const config = {
   width: 1125,
   height: 2436,
   transparent: true,
-  pixelArt: true,
+  pixelArt: false,
   physics: {
     default: 'arcade',
     arcade: {

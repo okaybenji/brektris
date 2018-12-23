@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: #ffaebb;
+  background: #d8d8d8;
   display: flex;
   justify-content: space-around;
   color: #ff3001;
@@ -11,6 +11,8 @@ body {
 canvas {
   width: 46.18vh;
   height: 100vh;
+  background: white;
+  border: 0.75vw solid #0433ff;
 }
 
 /*

@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: #d8d8d8;
+  background: #c5c5c5;
   display: flex;
   justify-content: space-around;
   color: white;
@@ -11,7 +11,7 @@ body {
 canvas {
   width: 46.18vh;
   height: 100vh;
-  background: rgb(216, 216, 216);
+  background: #c5c5c5;
   border-width: 1vw;
   border-style: solid;
   border-image: url('img/dottedBorder.png');

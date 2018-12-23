@@ -61,11 +61,11 @@ const scenes = {
       this.load.image('brickGem', 'img/brickGem.png');
       this.load.image('brickShell', 'img/brickShell.png');
       this.load.image('brickHard', 'img/brickHard.png');
-      this.load.image('brick2xBall', 'img/brick2xBall.png');
+      this.load.image('brickBall', 'img/brickBall.png');
       this.load.image('brickShooter', 'img/brickShooter.png');
       this.load.image('gem', 'img/gem.png');
       this.load.image('bullet', 'img/bullet.png');
-      this.load.image('line', 'img/dotted-line.png');
+      this.load.image('line', 'img/dottedLine.png');
     },
     create() {
       const menu = $('#menu');
@@ -172,7 +172,7 @@ const scenes = {
               : this.bricks.add(newBrick, true);
             copyTween(brick, newBrick);
           },
-          brick2xBall: () => {
+          brickBall: () => {
             this.addBall({
               x: collider.x,
               y: collider.y,
@@ -204,7 +204,7 @@ const scenes = {
 
           let type =
             rand < 0.05 ? 'none'
-            : rand < 0.15 ? 'brick2xBall'
+            : rand < 0.15 ? 'brickBall'
             : rand < 0.25 ? 'brickShell'
             : rand < 0.40 ? 'brickHard'
             : rand < 0.43 ? 'brickShooter'

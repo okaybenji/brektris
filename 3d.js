@@ -22,7 +22,7 @@ const textureLoader = new THREE.TextureLoader();
 const textures = {
   brickShell: textureLoader.load('img/brickShell.png'),
   brickGem: textureLoader.load('img/brickGem.png'),
-  brick2xBall: textureLoader.load('img/brick2xBall.png'),
+  brickBall: textureLoader.load('img/brickBall.png'),
   brickShooter: textureLoader.load('img/brickShooter.png'),
 };
 
@@ -53,14 +53,14 @@ const materials = {
   brickShellBottom: new THREE.MeshLambertMaterial({color: 0xff8b00}),
   brickShellFront: new THREE.MeshLambertMaterial({map: textures.brickShell}),
   brickGemFront: new THREE.MeshLambertMaterial({map: textures.brickGem}),
-  brick2xBallFront: new THREE.MeshLambertMaterial({map: textures.brick2xBall}),
+  brickBallFront: new THREE.MeshLambertMaterial({map: textures.brickBall}),
   brickShooterFront: new THREE.MeshLambertMaterial({map: textures.brickShooter}),
 };
 
 // Font face is 5th material
 materials.brickShell = [materials.brickShellFront, materials.brickShellFront, materials.brickShellTop, materials.brickShellBottom, materials.brickShellFront, materials.brickShellTop];
 materials.brickGem = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickGemFront, materials.brick];
-materials.brick2xBall = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brick2xBallFront, materials.brick];
+materials.brickBall = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickBallFront, materials.brick];
 materials.brickShooter = [materials.brick, materials.brick, materials.brick, materials.brick, materials.brickShooterFront, materials.brick];
 
 const bgGeo = new THREE.PlaneGeometry( main.offsetWidth * 3, main.offsetHeight * 3 );

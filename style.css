@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: white;
+  background: #d8d8d8;
   display: flex;
   justify-content: space-around;
   color: white;
@@ -12,11 +12,17 @@ canvas {
   width: 46.18vh;
   height: 100vh;
   background: rgb(216, 216, 216);
+  border-width: 1vw;
+  border-style: solid;
+  border-image: url('img/dottedBorder.png');
+  border-image-slice: 25%;
+  border-image-repeat: round;
 }
 
 main canvas {
   z-index: -1;
   opacity: 1;
+
 }
 
 main {
@@ -47,6 +53,7 @@ main {
 }
 
 #menu {
+  z-index: 1;
   position: absolute;
   margin: 0;
   top: 35vh;

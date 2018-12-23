@@ -11,7 +11,6 @@
 * Explore art styles
 
 ### Bug Fixes
-* Can't tap the restart button on mobile
 * Should not be possible to get a full row of shell bricks
 * Sometimes the ball just starts flying through bricks?
 * Seems like if you have two balls and they cross the paddle line in the same frame they are both destroyed

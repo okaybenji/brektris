@@ -386,7 +386,7 @@ const config = {
   type: Phaser.AUTO,
   width: 1125,
   height: 2436,
-  pixelArt: true,
+  transparent: true,
   physics: {
     default: 'arcade',
     arcade: {

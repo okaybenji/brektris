@@ -11,6 +11,7 @@ body {
 canvas {
   width: 46.18vh;
   height: 100vh;
+  background: rgb(216, 216, 216);
 }
 
 main canvas {

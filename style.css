@@ -61,6 +61,16 @@ main {
   text-align: center;
 }
 
+#upgrades {
+  font-size: 5vw;
+  text-align: left;
+  margin: auto 20vw;
+}
+
+#sliders {
+  width: 50vw;
+}
+
 .large {
   font-size: 7vh;
 }
@@ -77,4 +87,76 @@ main {
 
 #restartButton:hover, #restartButton:active {
   font-size: 8vh;
+}
+
+/* Checkbox/slider styles adapted from W3Schools :P */
+label, input {
+  position: relative;
+  padding-left: 4vw;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+label input {
+  height: 0;
+  width: 0;
+}
+
+input {
+  width: 0.25vw;
+  height: 4vw;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 1vw;
+  left: -1vw;
+  height: 4vw;
+  width: 4vw;
+  background-color: white;
+}
+
+input:checked ~ .checkmark {
+  background-color: #985af9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkmark:after {
+  top: -0.5vw;
+  left: 0.75vw;
+  width: 1.5vw;
+  height: 3vw;
+  border: solid white;
+  border-width: 0 1vw 1vw 0;
+  transform: rotate(40deg);
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60vw;
+  height: 4vw;
+  background: white;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 3vw;
+  height: 3vw;
+  background: #985af9;
 }

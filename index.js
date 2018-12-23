@@ -1,13 +1,6 @@
 const randomIntBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const randomArrayElement = arr => arr[Math.floor(Math.random() * arr.length)];
 
-const upgrades = {
-  slots: 1, // How many upgrades can be active at once.
-  ballProtection: 0, // This + 2 = number of balls before they shatter when crossing paddle line.
-  shooterPlus: false, // Upgrades shooter to break shell bricks.
-  brickSoftener: false, // Turns hard bricks directly into gems.
-};
-
 const scenes = {
   logo: {
     preload() {
@@ -139,7 +132,7 @@ const scenes = {
           },
           brickShell: () => {
             // Must hit it from above, unless this is a bullet from an upgraded shooter.
-            if (collider.body.blocked.down || (collider.type === 'bullet' && upgrades.shooterPlus)) {
+            if (collider.body.blocked.down || (collider.type === 'bullet' && $('#shooterPlus').checked)) {
               brick.disableBody(true, true);
             } else {
               if (brick.tweening) {
@@ -164,10 +157,10 @@ const scenes = {
           brickHard: () => {
             // Turns into regular brick.
             brick.disableBody(true, true);
-            const type = upgrades.brickSoftener ? 'gem' : 'brickGem';
+            const type = $('#shooterPlus').checked ? 'gem' : 'brickGem';
             const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, type);
             newBrick.type = type;
-            upgrades.brickSoftener ?
+            $('#shooterPlus').checked ?
               this.gems.add(newBrick, true)
               : this.bricks.add(newBrick, true);
             copyTween(brick, newBrick);
@@ -321,7 +314,7 @@ const scenes = {
     update() {
       // Remove extra balls that fall below the paddle.
       this.balls = this.balls.filter((ball) => {
-        if (ball.y > this.paddle.y && this.balls.length > (1 + upgrades.ballProtection)) {
+        if (ball.y > this.paddle.y && this.balls.length > (1 + $('#ballProtection').valueAsNumber)) {
           ball.disableBody(true, true);
           return false;
         }

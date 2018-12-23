@@ -27,9 +27,23 @@
   </head>
   <body>
     <div id="points">0</div>
-    <div id="menu" class="hidden">
+    <div id="menu" class="hiddn">
       <span class="large">GAME OVER</span><br><span class="again">Try Again?</span>
       <div id="restartButton">YEAH!</div>
+      <div id="upgrades">
+        <br><br>
+        <label>
+          <input type="checkbox" id="shooterPlus">Shooter+
+          <span class="checkmark"></span>
+        </label><br>
+        <label>
+          <input type="checkbox" id="brickSoftener">Brick Softener<br>
+          <span class="checkmark"></span>
+        </label>
+        <br>
+        Ball Protection+
+        <input class="slider" type="range" min="0" max="3" value="0" id="ballProtection">
+      </div>
     </div>
     <script id="fragShader" type="shader-code">
     void main() {

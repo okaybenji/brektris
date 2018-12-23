@@ -1,15 +1,5 @@
 # TODO
 
-### Power-Ups
-
-#### Equippable
-* Shooter breaks shell bricks
-* Hard bricks turn directly into gems (instead of gem bricks)
-* Protect my balls (+3)
-
-#### Permanent Upgrades
-* Equipment slots (+3)
-
 ### Features
 * Shop where players can spend points to unlock/upgrade power-ups (increase duration, cause them to appear more often, maybe shooter can upgrade to destroy shell bricks)
 * Track stats, all-time and per game -- rows survived, bricks broken, gems collected

@@ -1,6 +1,13 @@
 const randomIntBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const randomArrayElement = arr => arr[Math.floor(Math.random() * arr.length)];
 
+const upgrades = {
+  slots: 1, // How many upgrades can be active at once.
+  ballProtection: 0, // This + 2 = number of balls before they shatter when crossing paddle line.
+  shooterPlus: false, // Upgrades shooter to break shell bricks.
+  brickSoftener: false, // Turns hard bricks directly into gems.
+};
+
 const scenes = {
   logo: {
     preload() {
@@ -131,8 +138,8 @@ const scenes = {
             copyTween(brick, gem);
           },
           brickShell: () => {
-            // Must hit it from above.
-            if (collider.body.blocked.down) {
+            // Must hit it from above, unless this is a bullet from an upgraded shooter.
+            if (collider.body.blocked.down || (collider.type === 'bullet' && upgrades.shooterPlus)) {
               brick.disableBody(true, true);
             } else {
               if (brick.tweening) {
@@ -157,9 +164,12 @@ const scenes = {
           brickHard: () => {
             // Turns into regular brick.
             brick.disableBody(true, true);
-            const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, 'brickGem');
-            newBrick.type = 'brickGem';
-            this.bricks.add(newBrick, true);
+            const type = upgrades.brickSoftener ? 'gem' : 'brickGem';
+            const newBrick = new Phaser.Physics.Arcade.Sprite(this, brick.x, brick.y, type);
+            newBrick.type = type;
+            upgrades.brickSoftener ?
+              this.gems.add(newBrick, true)
+              : this.bricks.add(newBrick, true);
             copyTween(brick, newBrick);
           },
           brick2xBall: () => {
@@ -311,7 +321,7 @@ const scenes = {
     update() {
       // Remove extra balls that fall below the paddle.
       this.balls = this.balls.filter((ball) => {
-        if (ball.y > this.paddle.y && this.balls.length > 1) {
+        if (ball.y > this.paddle.y && this.balls.length > (1 + upgrades.ballProtection)) {
           ball.disableBody(true, true);
           return false;
         }
@@ -327,7 +337,8 @@ const scenes = {
           this.timers.shooterNextFires = null;
         }
         if (!this.timers.shooterNextFires || Date.now() > this.timers.shooterNextFires) {
-          const bullet = new Phaser.Physics.Arcade.Sprite(this, this.paddle.x, this.paddle.y, 'bullet')
+          const bullet = new Phaser.Physics.Arcade.Sprite(this, this.paddle.x, this.paddle.y, 'bullet');
+          bullet.type = 'bullet';
           this.bullets.add(bullet, true);
           bullet.setVelocity(0, -2000);
           this.timers.shooterNextFires = Date.now() + 250;
